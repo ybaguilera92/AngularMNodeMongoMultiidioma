@@ -1,0 +1,97 @@
+<div class="container">
+
+  <mat-toolbar>
+    <span>{{"Users" | translate }}</span>
+    <div class="example-spacer "></div>
+   
+    <div class="example-spacer "></div>
+    <div class="boton">
+
+      <button mat-raised-button color="primary" (click)="mostrarDialogoAdd()">
+        <mat-icon>add</mat-icon>{{"Add" | translate }}
+      </button>
+    </div>
+  </mat-toolbar>
+
+  <mat-form-field appearance="standard">
+    <mat-label>{{"Find" | translate }}</mat-label>
+    <input matInput (keyup)="applyFilter($event)" placeholder="Ex. ium" #input autocomplete="off">
+  </mat-form-field>
+  <div class="mitabla">
+
+    <div class="mat-elevation-z8">
+      <table mat-table [dataSource]="dataSource" matSort>
+
+        <!--- Note that these columns can be defined in any order.
+                The actual rendered columns are set as a property on the row definition" -->
+
+        <!-- Position Column -->
+        <ng-container matColumnDef="username">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> {{"User" | translate }} </th>
+          <td mat-cell *matCellDef="let element"> {{element.username}} </td>
+        </ng-container>
+
+        <!-- Name Column -->
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> {{"Name and Last Name" | translate }}</th>
+          <td mat-cell *matCellDef="let element"> {{element.name}} {{element.lastName}}</td>
+        </ng-container>
+
+
+        <!-- Symbol Column -->
+        <ng-container matColumnDef="email">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> {{"Email" | translate }} </th>
+          <td mat-cell *matCellDef="let element"> {{element.email}} </td>
+        </ng-container>
+        <!-- Symbol Column -->
+         <!-- Symbol Column -->
+         <ng-container matColumnDef="rol">
+           <th mat-header-cell *matHeaderCellDef mat-sort-header> {{"Rol" | translate }} </th>
+           <td mat-cell *matCellDef="let element"> {{element.role}} </td>
+         </ng-container>
+         <!-- Symbol Column -->
+          <!-- Symbol Column -->
+          <ng-container matColumnDef="enable">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> {{"State" | translate }} </th>
+            <td mat-cell *matCellDef="let element"> 
+               <mat-icon *ngIf="element.enabled" class="active-icon green-600 s-16">check</mat-icon>
+               <mat-icon *ngIf="!element.enabled" class="active-icon red-500 s-16">close</mat-icon>
+            </td>
+          </ng-container>
+          <!-- Symbol Column -->
+
+
+
+        <ng-container matColumnDef="acciones">
+          <th mat-header-cell *matHeaderCellDef> </th>
+          <td mat-cell *matCellDef="let element" style="text-align: right;">
+            <a class="pointer" (click)="mostrarUsuario(element._id)" style="color: #1878b0;" matTooltip="Detalles">
+
+              <mat-icon>search</mat-icon>
+            </a>
+            <a class="pointer" (click)="editarUsuario(element._id)" style=" color: #1f516f; " matTooltip="Editar ">
+              <mat-icon>edit</mat-icon>
+            </a>
+           <a class="pointer " (click)="mostrarDialogo(element._id)" style="color: #e15639; " matTooltip="Eliminar ">
+             <mat-icon>delete</mat-icon>
+           </a>
+
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns "></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns; "></tr>
+      </table>
+      <div class="paginator">
+        <mat-paginator [pageSizeOptions]="[5, 10, 25, 100] " aria-label="Select page of users "></mat-paginator>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<br>
+
+

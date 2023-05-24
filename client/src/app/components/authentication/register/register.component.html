@@ -1,0 +1,85 @@
+
+<div class="body">
+  <label>
+    {{"language" | translate }}: 
+    <select #langSelect (change)="changeLang(langSelect.value)">
+      <option *ngFor="let lang of langs" [value]="lang">
+          <span>{{ lang }} <mat-icon *ngIf="lang==idioma">*</mat-icon></span>
+      </option>
+    </select>
+  </label>
+  <div class="login">
+    <mat-spinner *ngIf="loading" diameter="50" class="spinner"></mat-spinner>
+
+    <form *ngIf="!loading" [formGroup]="form" (ngSubmit)="register()">
+      <mat-card style="margin-top: 10px;">
+        <img src="./assets/img/219983.png" alt="" width="50%" height="80%">
+        <h1 class="h3 mb-3 fw-normal">{{"Create User" | translate }}</h1>
+          <mat-form-field class="ancho">
+            <mat-label>{{"User" | translate }}</mat-label>
+            <input matInput autocomplete="off" formControlName="username">
+            <mat-error *ngIf="form.get('username').hasError('required')">
+              El usuario es requerido
+            </mat-error>
+            <mat-error *ngIf="form.get('username').hasError('pattern')">
+              El usuario no es válido. Solo letras y números. Deben tener entre 3 y 16
+              caracteres.
+            </mat-error>
+            <mat-error *ngIf="form.get('username').hasError('unique')">
+              Por favor, introduce un usuario distinto, ya este existe.
+            </mat-error>
+          </mat-form-field>
+           <mat-form-field class="ancho">
+             <mat-label>{{"Name" | translate }}</mat-label>
+             <input matInput autocomplete="off" formControlName="name">
+             <mat-error *ngIf="form.get('name').hasError('required')">
+               El nombre es requerido
+             </mat-error>
+             <mat-error *ngIf="form.get('name').hasError('pattern')">
+               El nombre solo contiene letras y separado por espacios cuando son dos nombres.
+             </mat-error>
+           </mat-form-field>
+            <mat-form-field class="ancho">
+              <mat-label> {{"Last Name" | translate }}</mat-label>
+              <input matInput autocomplete="off" formControlName="lastname">
+              <mat-error *ngIf="form.get('lastname').hasError('required')">
+                Los apellidos son requeridos
+              </mat-error>
+              <mat-error *ngIf="form.get('lastname').hasError('pattern')">
+                Los apellidos solo contiene letras y separado por espacios.
+              </mat-error>
+            </mat-form-field>
+               <mat-form-field class="ancho">
+                 <mat-label> {{"Email" | translate }}</mat-label>
+                 <input type="email" matInput autocomplete="off" formControlName="email">
+                 <mat-error *ngIf="form.get('email').hasError('required')">
+                   El correo es requerido
+                 </mat-error>
+                 <mat-error *ngIf="form.get('email').hasError('pattern')">
+                   El correo no es válido
+                 </mat-error>
+                 <mat-error *ngIf="form.get('email').hasError('unique')">
+                   Por favor, introduce una dirección de correo distinta, ya esta existe.
+                 </mat-error>
+               </mat-form-field>
+                 <mat-form-field class="ancho">
+                   <mat-label> {{"Password" | translate }}</mat-label>
+                   <input type="password" matInput autocomplete="off" formControlName="password">
+                   <mat-error *ngIf="form.get('password').hasError('required')">
+                     La contraseña es requerida
+                   </mat-error>
+                   <mat-error *ngIf="form.get('password').hasError('minLength')">
+                     La cantidad de caracteres debe ser mayor a 6
+                   </mat-error>
+                 </mat-form-field>
+        <br>
+        <button type="submit" class="ancho button" mat-raised-button color="primary"
+          [disabled]="form.invalid">{{"Get into" | translate }}</button>
+          <button mat-raised-button style="margin-top: 20px;" class="ancho button"
+            routerLink="/login">{{"Authenticate" | translate }}</button>
+      </mat-card>
+    
+    </form>
+
+  </div>
+</div>

@@ -1,0 +1,11 @@
+.ancho{
+    width: 80%;
+}
+.row {
+  display: flex;
+  flex-direction: row;
+}
+.container{
+  position: relative;
+  top: 60px;
+}

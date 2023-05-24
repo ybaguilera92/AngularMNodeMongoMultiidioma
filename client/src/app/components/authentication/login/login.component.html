@@ -1,0 +1,42 @@
+ 
+<div class="body">   
+  <label>
+    {{"language" | translate }}:
+    <select #langSelect (change)="changeLang(langSelect.value)">
+      <option *ngFor="let lang of langs" [value]="lang">
+        <span>{{ lang }} <mat-icon *ngIf="lang==idioma">*</mat-icon></span>
+      </option>
+    </select>
+  </label>
+    <div class="login">
+    <mat-spinner *ngIf="loading" diameter="50" class="spinner"></mat-spinner>
+    
+    <form *ngIf="!loading" [formGroup]="form" (ngSubmit)="ingresar()">
+     <mat-card style="margin-top: 10px;">
+        <img src="./assets/img/219983.png" alt="" width="50%" height="80%">
+        <h1 class="h3 mb-3 fw-normal"> {{"Authenticate" | translate }}</h1>
+       <mat-form-field class="ancho" appearance="fill">
+            <mat-label>{{"User" | translate }}</mat-label>
+            <input matInput type="text" autocomplete="off" formControlName="usuario">
+             <mat-error *ngIf="form.get('usuario').hasError('unique')">
+               {{"User no exist" | translate }}
+             </mat-error>
+          </mat-form-field>
+        <mat-form-field class="ancho" appearance="fill">
+            <mat-label>{{"Password" | translate }}</mat-label>
+            <input matInput type="password" autocomplete="off" formControlName="password"> 
+             <mat-error *ngIf="form.get('password').hasError('unique')">
+               {{"Password incorrect" | translate }}
+             </mat-error>
+          </mat-form-field>
+          <br>
+          <button type="submit" class="ancho button" mat-raised-button color="primary"
+            [disabled]="form.invalid">{{"Get into" | translate }}</button>
+          <button mat-raised-button style="margin-top: 20px;" class="ancho button"
+            routerLink="/register">{{"Create User" | translate }}</button>
+    </mat-card>
+    </form>
+
+    </div>
+</div>
+

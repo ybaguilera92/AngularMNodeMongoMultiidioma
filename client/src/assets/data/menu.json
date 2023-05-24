@@ -1,0 +1,12 @@
+[
+  
+    {
+        "nombre": "Users",
+        "redirect": "/users"
+    },
+    {
+        "nombre": "Reports",
+        "redirect": "/reports"
+    }
+    
+]
