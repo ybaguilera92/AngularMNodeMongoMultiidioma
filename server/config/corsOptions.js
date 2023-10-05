@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 
 dotenv.config();                             //TODO: Delete  
-const whitelist = [process.env.FRONTEND_URL, process.env.FRONTEND_URL2];
+const whitelist = [process.env.FRONTEND_URL, process.env.FRONTEND_URL2, process.env.FRONTEND_URL3];
 
 
 const corsOptions = {

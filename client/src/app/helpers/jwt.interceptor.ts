@@ -10,11 +10,8 @@ export class JwtInterceptor implements HttpInterceptor {
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         console.log('Hola55555');
-        console.log(localStorage.getItem("idioma"));
-    //    this.translate.setDefaultLang(localStorage.getItem("idioma"));
-        // add authorization header with jwt token if available       
+        console.log(localStorage.getItem("idioma"));     
         let currentUser = this.authenticationService.currentUserValue;
-       // console.log(currentUser.token);
         if (currentUser && currentUser.token) {
             request = request.clone({
                 setHeaders: {

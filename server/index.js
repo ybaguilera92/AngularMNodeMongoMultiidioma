@@ -15,6 +15,11 @@ import allSeeders from "./models/seeds/allSeeds.js";
 import I18n from "./node_modules/i18n/i18n.js"
 import path from "path";
 
+import http from 'http';
+import {
+    Server
+} from 'socket.io';
+
 const app = express();
 app.use(express.json());
 app.use(express.json({
@@ -35,7 +40,7 @@ app.use(express.urlencoded({
 //console.log(i18n.__n('You have %s message', 5));
 
 app.use(morgan('dev'));
-app.use(cors(corsOptions));
+app.use(cors());
 
 /*app.use(historyApiFallback({
     disableDotRule: true,
@@ -45,8 +50,34 @@ app.use(cors(corsOptions));
 dotenv.config();
 
 fn_connect();
+
 app.listen(process.env.PORT || 4000, () => console.log("Server running on port 4000"));
+
+// Crear servidor HTTP y escuchar en un puerto específico
+const server = http.createServer(app);
+const io = new Server(server, {
+    cors: {
+        origin: "*",
+        methods: ["GET", "POST"]
+    }
+});
+app.get('/s', (req, res) => {
+    console.log("hello world")
+    res.send("hello world")
+});
+// Agregar un listener para la conexión de sockets
+io.on('connection', (socket) => {
+    console.log('a user connected');
+    socket.on('message', (msg) => {
+        console.log('message : ' + msg);
+        io.emit('message', msg);
+    })
+
+    socket.on('disconnect', () => {
+        console.log('user disconnected')
+    })
+})
 
 allSeeders();
 app.use("/API/USER", userRouter);
-app.use("/API/report", reportRouter);
+app.use("/API/LOG", reportRouter);

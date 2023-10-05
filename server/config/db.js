@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const fn_connect = async () => {
+const connect = async () => {
   try {    
     const connect_ = await mongoose.connect(process.env.MONGO_URI, {
       useNewUrlParser: true,
@@ -16,4 +16,4 @@ const fn_connect = async () => {
   }
 };
 
-export default fn_connect;
+export default connect;

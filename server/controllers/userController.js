@@ -1,162 +1,184 @@
-import shm_user from "../models/userModel.js";
-import fn_JWT from "../helpers/generateJWT.js";
-import fn_generateSerial from "../helpers/generateSerial.js";
-import {  logact} from "./logactController.js";
-import { getAll, getOne, deleteOne } from "./handlerFactory.js";
+import userSchema from "../models/userModel.js";
+import JWT from "../helpers/generateJWT.js";
+import generateSerial from "../helpers/generateSerial.js";
+import {
+  addLog
+} from "./logController.js";
+import addHistorial  from "./HistorialController.js";
+import {
+  getAll,
+  getOne,
+  deleteOne
+} from "./handlerFactory.js";
+import historialSchema from "../models/historialModel.js";
 
 
-const fn_signIn = async (req, res) => {
+const signIn = async (req, res) => {
   const {
     username,
     password
   } = req.body;
 
-  const user = await shm_user.findOne({
+  const user = await userSchema.findOne({
     username
   });
 
   if (!user) {
-    logact(username, "Autentication", "Sign In", "err: user is not register!");
+    addLog(username, "Autentication", "Sign In", "User is not register!");
     return res.status(400).json({
       msg: `Username is not register!`
     });
   }
   if (!user.enabled) {
-    logact(username, "Autentication", "Sign In", "err: your account is enabled!");
+    addLog(username, "Autentication", "Sign In", "Your account is enabled!");
     return res.status(403).json({
       msg: "Your account is enabled!"
     });
   }
 
   if (await user.checkoutPassword(password)) {
-    logact(user, "Autentication", "Sign In", "succ: a new sign!");
+    addLog(user, "Autentication", "Sign In", "A new sign!");
     res.json({
       _id: user._id,
       name: user.name,
       email: user.email,
       username: user.username,
       role: user.role,
-      lastName: user.lastName,   
-      token: fn_JWT(user._id),
+      lastName: user.lastName,
+      token: JWT(user._id),
     });
   } else {
-    logact(username, "Autentication", "Sign In", "err: password incorrect!");
+    addLog(username, "Autentication", "Sign In", "Password incorrect!");
+    user.count = user.count + 1;
+    await user.save();
+    if (user.count == 2) { 
+      user.enabled = false;
+      user.count = 0;
+      await user.save();
+       return res.status(400).json({
+         msg: "User disable!"
+       });
+    }
     return res.status(400).json({
       msg: "Password incorrect!"
     });
   }
 };
 
-const fn_signOut = async (req, res) => {
+const signOut = async (req, res) => {
   const {
     auth
   } = req.body;
   const {
     _res
   } = req.params;
-
-  logact(auth, "Autentication", "Sign Out", _res !== "_" ? _res : "succ: a new sign Out!");
+  addLog(req, "Autentication", "Sign Out", _res !== "_" ? _res : "A new sign Out!");
   return res.json({
     msg: "Sign Out!"
   });
 }
 
-const fn_createOne = async (req, res) => {
+const addUser = async (req, res) => {
   const {
     email,
     username
   } = req.body;
-  const issetUser = await shm_user.findOne({
+  const issetUser = await userSchema.findOne({
     username
   });
-  const issetEmail = await shm_user.findOne({
+  const issetEmail = await userSchema.findOne({
     email
   });
 
   if (issetEmail) {
-    logact(req, "Users", "Create One", "err: user is register!");
+    addLog(req, "Users", "Create", "User is register!");
     return res.status(400).json({
       msg: `This email is already registered!`
     });
   }
   if (issetUser) {
-    logact(req, "Users", "Create One", "err: user is register!");
-    return res.status(400).json({
-       msg: `This username is already registered!`
-    });
-  }
-  try {
-    const user = new shm_user(req.body);
-    console.log(user);
-    user.token = fn_generateSerial();
-
-    await user.save();
-
-    //* send email
-    /* fn_email_create_account({
-        email: user.email,
-        name: user.name,
-        token: user.token,
-      });*/
-    logact(req, "Users", "Create One", "succ: a new user create!");
-    res.json(user);
-  } catch (err) {
-    logact(req, "Users", "Create One", "err: invalid token!");
-    console.log(err);
-  }
-};
-const fn_register = async (req, res) => {
-  const {
-    email,
-    username
-  } = req.body;
-  const issetUser = await shm_user.findOne({
-    username
-  });
-  const issetEmail = await shm_user.findOne({
-    email
-  });
-
-  if (issetEmail) {
-    logact(req, "Users", "Create One", "err: user is register!");
-    return res.status(400).json({
-      msg: `This email is already registered!`
-    });
-  }
-  if (issetUser) {
-    logact(req, "Users", "Create One", "err: user is register!");
+    addLog(req, "Users", "Create", "User is register!");
     return res.status(400).json({
       msg: `This username is already registered!`
     });
   }
   try {
-    const user = new shm_user(req.body); 
-    user.token = fn_generateSerial();
-    user.role = "Other";
+    const user = new userSchema(req.body);
+
+    user.token = generateSerial();
+    
     await user.save();
 
+    await addHistorial({
+      user: user._id,
+      password: user.password
+    });
+
     //* send email
-    /* fn_email_create_account({
+    /* email_create_account({
         email: user.email,
         name: user.name,
         token: user.token,
       });*/
-    logact(req, "Users", "Create One", "succ: a new user create!");
+    addLog(req, "Users", "Create", "A new user create!");
     res.json(user);
   } catch (err) {
-    logact(req, "Users", "Create One", "err: invalid token!");
+    addLog(req, "Users", "Create", "Invalid token!");
     console.log(err);
   }
 };
-const fn_updateOne = async (req, res) => {
+const register = async (req, res) => {
+  const {
+    email,
+    username
+  } = req.body;
+  const issetUser = await userSchema.findOne({
+    username
+  });
+  const issetEmail = await userSchema.findOne({
+    email
+  });
+
+  if (issetEmail) {
+    addLog(req, "Users", "Register", "User is register!");
+    return res.status(400).json({
+      msg: `This email is already registered!`
+    });
+  }
+  if (issetUser) {
+    addLog(req, "Users", "Register", "User is register!");
+    return res.status(400).json({
+      msg: `This username is already registered!`
+    });
+  }
+  try {
+    const user = new userSchema(req.body);
+    user.token = generateSerial();
+    user.role = "Other";
+    await user.save();
+
+    //* send email
+    /* email_create_account({
+        email: user.email,
+        name: user.name,
+        token: user.token,
+      });*/
+    addLog(req, "Users", "Register", "A new user register!");
+    res.json(user);
+  } catch (err) {
+    addLog(req, "Users", "Register", "Invalid token!");
+    console.log(err);
+  }
+};
+const updateUser = async (req, res) => {
   const {
     _id
   } = req.params;
 
   try {
-    const issetUser = await shm_user.findById(_id);
+    const issetUser = await userSchema.findById(_id);
     if (!issetUser) {
-      logact(req, "Users", "Update One", "err: in getting user!");
+      addLog(req, "Users", "Update", "In getting user!");
       return res.status(404).json({
         msg: "Error getting user!"
       });
@@ -174,18 +196,18 @@ const fn_updateOne = async (req, res) => {
     //console.log(issetUser)
 
     req.body.password?.length == 60 ?
-      logact(req, "Users", "Update One", "succ: a new user update!") :
-      logact(req, "Users", "Change Password", "succ: changed password!");
+      addLog(req, "Users", "Update", "A new user update!") :
+      addLog(req, "Users", "Change Password", "Changed password!");
 
   } catch (err) {
-    logact(req, "Users", "Update One", "err: invalid token!");
+    addLog(req, "Users", "Update One", "Invalid token!");
     return res.status(404).json({
       msg: "Fatal error!"
     });
   }
 }
 
-const fn_changePassword = async (req, res) => {
+const changePassword = async (req, res) => {
   const {
     _id
   } = req.params;
@@ -195,92 +217,127 @@ const fn_changePassword = async (req, res) => {
   } = req.body;
 
   try {
-    const userFind = await shm_user.findById({
+    const userFind = await userSchema.findById({
       _id
     });
 
     if (!userFind) {
-      logact(req, "Users", "Change Password", "err: user not fount!");
+      addLog(req, "Users", "Change Password", "User not fount!");
       return res.json({
         msg: "User not fount!",
         error: true
       });
     }
+    const historyPassword = await historialSchema.find({ user: _id}).sort({_id: -1}).limit(3)
+    if (historyPassword.length) {
+      for (let i = 0; i < historyPassword.length; i++) { 
+        if (await historyPassword[i].existPassword(passwordNew)) {
+               return res.status(400).json({
+                 msg: "Password new exist!",
+           });
+        }
+      }
+    }
     if (!await userFind.checkoutPassword(passwordCurrent)) {
-      logact(req, "Users", "Change Password", "err: current password not macth!");
-      // return res.json({
-      //   msg: "Current password not macth!",
-      //   error: true
-      // });
+      addLog(req, "Users", "Change Password", "Current password not macth!");
       return res.status(400).json({
         msg: "Current password not macth!",
       });
     }
     userFind.password = passwordNew;
     userFind.save();
-    logact(req, "Users", "Change Password", "succ: changed password!");
+    addLog(req, "Users", "Change Password", "Changed password!");
     res.json({
       msg: "Successfully changed password!",
       error: false
     });
 
   } catch (err) {
-    logact(req, "Users", "Change Password", "err: invalid token!");
+    console.log(err);
+    addLog(req, "Users", "Change Password", "Invalid token!");
     return res.status(404).json({
       msg: "Fatal error!"
     });
   }
 };
 
-const fn_changeStatus = async (req, res) => {
+const changeStatus = async (req, res) => {
   const {
     _id
   } = req.params;
 
   try {
-    const userFind = await shm_user.findById({
+    const userFind = await userSchema.findById({
       _id
     });
 
     if (!userFind) {
-      logact(req, "Users", "Change Status", "err: user not fount!");
+      addLog(req, "Users", "Change Status", "User not fount!");
       return res.json({
         msg: "User not fount!",
         error: true
       });
-    }
-
+    }    
     userFind.enabled = !userFind.enabled;
     userFind.save();
-    logact(req, "Users", "Change Status", "succ: changed status!");
+    addLog(req, "Users", "Change Status", "Changed status!");
     res.json(userFind);
 
   } catch (err) {
-    logact(req, "Users", "Change Status", "err: changed status!");
+    addLog(req, "Users", "Change Status", "Changed status!");
     return res.status(404).json({
       msg: "Fatal error!"
     });
   }
 }
+const deleteUser = async (req, res) => {
+  const {
+    _id
+  } = req.params;
 
-const fn_perfil = async (req, res) => {
+  try {
+    const userFind = await userSchema.findById({
+      _id
+    });
+
+    if (!userFind) {
+      addLog(req, "Users", "Change Status", "User not fount!");
+      return res.json({
+        msg: "User not fount!",
+        error: true
+      });
+    }
+    userFind.deleteAt = true;
+    userFind.save();
+    addLog(req, "Users", "Delete User", "User deleted!");
+    res.json(userFind);
+
+  } catch (err) {
+    addLog(req, "Users", "Delete User ", "Invalid token!");
+    return res.status(404).json({
+      msg: "Fatal error!"
+    });
+  }
+}
+const perfil = async (req, res) => {
   res.json(req.user)
 };
 
-const fn_getAll = getAll(shm_user);
-const fn_getOne = getOne(shm_user);
-const fn_deleteOne = deleteOne(shm_user, "Users");
+const getUsers = getAll(userSchema);
+const getUser = getOne(userSchema);
+//const deleteUser = deleteOne(userSchema, "Users");
 
 
 export {
-  fn_signIn,
-  fn_signOut,
-  fn_createOne,
-  fn_changePassword,
-  fn_updateOne,
-  fn_getAll,
-  fn_getOne,
-  fn_deleteOne,
-  fn_changeStatus,
-  fn_perfil, fn_register
+  signIn,
+  signOut,
+  addUser,
+  changePassword,
+  updateUser,
+  getUsers,
+  getUser,
+  deleteUser,
+  changeStatus,
+  perfil,
+  register
 };

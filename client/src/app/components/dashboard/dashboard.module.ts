@@ -15,6 +15,7 @@ import { SidenavListComponent } from './sidenav-list/sidenav-list.component';
 
 import { UsersModule } from './users/users.module';
 import { RouterModule, Routes } from '@angular/router';
+import { LogsModule } from './logs/logs.module';
 const routes: Routes = [
   {
     path: '', component: DashboardComponent, children: [
@@ -42,6 +43,7 @@ const routes: Routes = [
   imports: [
     CommonModule,
     UsersModule,
+    LogsModule,
     SharedModule,
     TranslateModule,
     RouterModule.forChild(routes)

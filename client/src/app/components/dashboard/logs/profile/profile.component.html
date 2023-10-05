@@ -1,0 +1,37 @@
+
+  <mat-toolbar>
+    <span>Detalles del Usuario "{{user.username}}"</span>
+  </mat-toolbar>
+  <mat-card style="margin-top: 10px;">
+    
+      <mat-grid-list cols="4" rowHeight="70px">
+        <mat-grid-tile [colspan]="1" [rowspan]="1">          
+            <mat-label><b>{{"User" | translate }}: </b>{{user.username}} </mat-label>
+         </mat-grid-tile>
+        <mat-grid-tile [colspan]="3" [rowspan]="4">
+          <img src="./assets/img/219983.png" width="250" height="250">
+        </mat-grid-tile>
+        <mat-grid-tile [colspan]="1" [rowspan]="1">      
+            <mat-label><b>{{"Name" | translate }}: </b>{{user.name}}</mat-label>
+        </mat-grid-tile>
+        <mat-grid-tile [colspan]="1" [rowspan]="1">
+            <mat-label><b>{{"Last Name" | translate }}:</b> {{user.lastName}}</mat-label>
+        </mat-grid-tile>
+        <mat-grid-tile [colspan]="1" [rowspan]="1">      
+            <mat-label><b>{{"Email" | translate }}:</b> {{user.email}}</mat-label>
+        </mat-grid-tile>
+      <mat-grid-tile [colspan]="1" [rowspan]="1">
+        <mat-label><b>Rol:</b> {{user.role}}</mat-label>
+      </mat-grid-tile>
+
+        <mat-grid-tile [colspan]="1" [rowspan]="1">
+          <button mat-raised-button style="margin-right: 20px;" (click)="regresar()">Cerrar</button>         
+
+        </mat-grid-tile>
+      </mat-grid-list>
+
+      <br>
+
+   
+  </mat-card>
+

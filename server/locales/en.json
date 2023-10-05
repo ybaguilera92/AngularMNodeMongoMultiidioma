@@ -61,5 +61,30 @@
 	"You have %s message": {
 		"one": "You have %s message",
 		"other": "You have %s message"
-	}
+	},
+
+	"Autentication":"Autentication",
+	"Sign In":"Sign In",
+	"User is not register!":"User is not register!",
+	"Your account is enabled!":"Your account is enabled!",
+	"A new sign":"A new sign",
+	"Password incorrect!":"Password incorrect!",
+	"User disable!":"User disable!",
+	"Sign Out":"Sign Out",
+	"A new sign Out!":"A new sign Out!",
+	"Add User":"Add User",
+	"User is register!": "User is register!",
+	"This email is already registered!":"This email is already registered!",
+	"This username is already registered!":"This username is already registered!",
+	"Invalid token!": "Invalid token!",
+	"A new user create!":"A new user create!",
+	"A new user register!":"A new user register!",
+	"In getting user!":"In getting user!",
+	"Error getting user!":"Error getting user!",
+	"A new user update!":"A new user update!",
+	"Change Password":"Change Password"
+
+
+
+
 }

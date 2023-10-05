@@ -2,7 +2,6 @@ import { Router } from '@angular/router';
 import { UserService } from 'src/app/services/user.service';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
-import { Usuario } from 'src/app/interfaces/usuario';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatSort } from '@angular/material/sort';
 import {
@@ -11,8 +10,7 @@ import {
 import { MatDialog } from "@angular/material/dialog";
 import { DialogoConfirmacionComponent } from "../dialogo-confirmacion/dialogo-confirmacion.component";
 import { User } from 'src/app/models/user';
-import { Subject, takeUntil } from 'rxjs';
-import { isNullOrEmpty } from 'src/app/fuse-config';
+import { Subject } from 'rxjs';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { TokenStorageService } from 'src/app/services/token.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -51,12 +49,10 @@ export class UsersComponent implements OnInit {
     this.dataSource = new MatTableDataSource<User>();
   }
 
-  ngOnInit(): void {
-    console.log('hola')
+  ngOnInit(): void {    
     this.chargeUsers();
   }
-  chargeUsers() {
-    console.log('carga')
+  chargeUsers() {   
     this._userService.getUsers().then(data => this.dataSource.data = data.data);
     // this._userService.userSubject.subscribe({
     //   next: (c) => {
@@ -120,10 +116,6 @@ export class UsersComponent implements OnInit {
       this._userService.deleteUser(index).
         subscribe({
           next: (c) => {
-            // this.dataSource.data = this._userService.userValue.data;
-            // var found = this.dataSource.data.findIndex(e => e._id === index);
-            // this.dataSource.data.splice(found, 1);
-          //  this._userService.setUsersSubject(this.dataSource);
             this.chargeUsers();
             this.translate.stream('Delete User')
               .subscribe((res: string) => {

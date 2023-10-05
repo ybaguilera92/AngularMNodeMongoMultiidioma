@@ -1,9 +1,7 @@
-import mongoose, {
-  Schema
-} from "mongoose";
+import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 
-const shm_user = mongoose.Schema({
+const userSchema = mongoose.Schema({
   name: {
     type: String,
     require: true,
@@ -46,22 +44,30 @@ const shm_user = mongoose.Schema({
   token: {
     type: String,
   },
+  count: {
+    type: Number,
+    default: 0
+  },
   // =================================
   enabled: {
     type: Boolean,
     default: true
   },
+  deleteAt: {
+    type: Boolean,
+    default: false
+  },
 }, {
   timestamps: true
 });
 
-shm_user.pre("save", async function (next) {
+userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) next();
   this.password = await bcrypt.hash(this.password, await bcrypt.genSalt(10));
 });
 
-shm_user.methods.checkoutPassword = async function (pass) {
+userSchema.methods.checkoutPassword = async function (pass) {
   return await bcrypt.compare(pass, this.password);
 };
 
-export default mongoose.model("User", shm_user);
+export default mongoose.model("User", userSchema);

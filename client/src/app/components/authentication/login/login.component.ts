@@ -61,12 +61,15 @@ export class LoginComponent implements OnInit {
           })
 
         } else {
-          this.tokenStorage.saveToken(data.token);
           this.tokenStorage.saveUser(data);
-          //console.log(this.tokenStorage.getUser());
-          //   window.location.reload();
-          // console.log(this.tokenStorage.getUser());
-          this.fakeloading();
+          this.tokenStorage.saveToken(data.token);
+          
+          let sms="";
+          this.translate.stream('Welcome')
+            .subscribe((res: string) => {
+              sms = `${res} ${data.username}!!`;
+            });
+          this.fakeloading(sms);
         }
 
 
@@ -81,8 +84,7 @@ export class LoginComponent implements OnInit {
           this.errorAux = error;
           let message = this.errorAux.error.msg;
           this.translate.stream(message)
-            .subscribe((res: string) => {              
-              //  message = "{{'User' | translate}}"
+            .subscribe((res: string) => {             
               Swal.fire({
                 title: 'Error:',
                 text: res,
@@ -101,7 +103,12 @@ export class LoginComponent implements OnInit {
       verticalPosition: 'bottom',
     });
   }
-  fakeloading() {
+  fakeloading(sms) {
+    this._snackBar.open(sms, '', {
+      duration: 1000,
+      horizontalPosition: 'center',
+      verticalPosition: 'bottom',
+    });
     this.loading = true;
     setTimeout(() => { this.router.navigate(['/home']) }
       , 600)

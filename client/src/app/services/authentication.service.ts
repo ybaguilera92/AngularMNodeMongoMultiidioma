@@ -103,10 +103,10 @@ export class AuthenticationService {
             }));
     }
     logout() {      
-        let user = new User(null);     
-        this.tokenStorageService.signOut();
-        this.currentUserSubject.next(user);
-        this.isUserLoggedInSubject.next(false);          
+        //let user = new User(null);     
+       // this.tokenStorageService.signOut();
+        //this.currentUserSubject.next(user);
+        //this.isUserLoggedInSubject.next(false);          
         return this.http.post(`${environment.apiUrl}/USER/signOut/_`, this.httpOptions);
        // this.router.navigate(['/']);      
     }

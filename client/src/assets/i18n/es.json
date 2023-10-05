@@ -26,7 +26,7 @@
     "Email Unique": "Este correo ya está registrado!",
     "User no exist": "Este usuario no está registrado!",
     "Password incorrect": "Contraseña incorrecta!",
-    "Your account is enabled!": "Esta cuenta no está avilitada!",
+    "Your account is enabled!": "Esta cuenta no está habilitada!",
     "New user create": "Nuevo usuario creado!!",
     "User update": "Usuario actualizado!!",
     "Successfully changed password!": "Contraseña cambiada con éxito!",
@@ -57,6 +57,15 @@
     "Last Name Error": "Los apellidos solo contiene letras y separado por espacios.",
     "Info":"Información",
     "Confirm":"Confirmar",
-    "Cancel":"Cancelar"
+    "Cancel":"Cancelar",
+    "ViewSend": "Vista Enviada",
+    "Response": "Respuesta",
+    "Action":"Acción",
+    "Created Date": "Fecha Creada",
+    "Logs":"Registros",
+    "Password new exist":"Por favor elija una contraseña que no haya usado antes!!",
+    "User disable!": "Usuario desabilitado!!",
+    "Welcome": "Bienvenido"
+
 
 }

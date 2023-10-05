@@ -1,7 +1,7 @@
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { Component, OnInit, OnDestroy } from '@angular/core';  
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { UserService } from 'src/app/services/user.service';
 import {
   MatSnackBar,
@@ -55,40 +55,45 @@ export class ChangePasswordComponent implements OnInit {
       this.router.navigate(['/users']);
     }
   }
-  
+
   savePassword() {
     const data = this.form.getRawValue();
-    const userPassword = {    
-      "passwordCurrent":data.passwordCurrent,
-      "passwordNew": data.passwordNew    
+    const userPassword = {
+      "passwordCurrent": data.passwordCurrent,
+      "passwordNew": data.passwordNew
     }
     if (data.passwordNew != data.password) {
       this.error("Las contraseñas no coinciden.");
     } else {
-      this._userService.updatePassword(userPassword,this.user._id).pipe(takeUntil(this._unsubscribeAll))
-        .subscribe(res => {
-          console.log(res)
-          // Show the success message
-          this.translate.stream(res.msg)
-            .subscribe((res: string) => {
-              this.error(res);
-            });
-         // this.error("Contraseñas actualizada correctamente.");
-          this.router.navigate(['/']);
-        },
-          error => {   
-            console.log(error.error.msg)
-            if (error.status == 400) {
-              if (error.error.msg.indexOf("Current password not macth!") > -1) {
+      this._userService.updatePassword(userPassword, this.user._id).pipe(takeUntil(this._unsubscribeAll))
+        .subscribe({
+          next: (res) => {           
+            // Show the success message
+            this.translate.stream(res.msg)
+              .subscribe((res: string) => {
+                this.error(res);
+              });
+            this.dialogo.close(false);
+            // this.error("Contraseñas actualizada correctamente.");
+            this.router.navigate(['/']);
+          },
+          error: (err) => {
+            //console.log(err.error.msg)
+            if (err.status == 400) {
+              if (err.error.msg.indexOf("Current password not macth!") > -1) {
                 this.form.get('passwordCurrent').setErrors({ 'unique': true });
+              }
+              if (err.error.msg.indexOf("Password new exist!") > -1) {
+                this.form.get('passwordNew').setErrors({ 'unique': true });
               }
               this.form.markAllAsTouched();
             }
-          });
+          }
+        });
     }
     // console.log(data);
   }
-  cerrarDialogo() { 
+  cerrarDialogo() {
     this.dialogo.close(false);
   }
   error(error: string) {

@@ -25,7 +25,7 @@
       <mat-icon>more_vert</mat-icon>
     </button>
     <mat-menu #menu1="matMenu">
-        <button mat-menu-item routerLink="/profile">
+        <button mat-menu-item (click)="profile()">
         <mat-icon>supervised_user_circle</mat-icon>
         <span>{{"Profile" | translate }}</span>
       </button>

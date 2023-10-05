@@ -56,7 +56,15 @@
     "Last Name Error": "Last names only contain letters and separated by spaces.",
     "Info": "Info",
     "Confirm": "Confirm",
-    "Cancel": "Cancel"
+    "Cancel": "Cancel",
+    "ViewSend":"View Send",
+    "Response": "Response",
+    "Action": "Action",
+    "Created Date": "Created Date",
+    "Logs": "Logs",
+    "Password new exist": "Please choose a password that you have not used before!!",
+    "User disable!":"User disable!!",
+    "Welcome": "Welcome"
 
 
 }

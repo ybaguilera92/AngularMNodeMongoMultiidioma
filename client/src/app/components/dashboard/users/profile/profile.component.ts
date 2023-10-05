@@ -34,27 +34,11 @@ export class ProfileComponent implements OnInit, OnDestroy {
       localStorage.removeItem('id_usuario');
     }
   }
-  ngOnInit(): void {
-    if (localStorage.getItem('id_usuario') != null) {
-      this._userService.getUserOne(localStorage.getItem('id_usuario')).subscribe({
-        next: (c) => {
-          this.user = new User(c);
-         // this.rol = this.user.roles[0].name;
-        },
-        error: (err) => {
-          this.error(err.error.message);
-          this.router.navigate(['/users']);
-        }
-      });
-    } else {
-      console.log('hi')
+  ngOnInit(): void {    
       this._authenticationService.currentUser.pipe(takeUntil((this._unsubscribeAll))).subscribe((user) => {
         this.user = !isNullOrEmpty(user) ? user : !isNullOrEmpty(this.tokenStorage.getUser()) ? this.tokenStorage.getUser() : null;
       });
-      console.log(this.user)
-   //   this.user = this.tokenStorage.getUser();
-     // this.rol = this.user.roles[0];
-    }
+    
   }
   regresar() {
     localStorage.removeItem('id_usuario');

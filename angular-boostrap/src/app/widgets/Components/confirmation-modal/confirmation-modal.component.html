@@ -1,0 +1,20 @@
+<div class="card card-custom card-sticky">
+  <!-- begin::Header -->
+  <div class="card-header border-0 pt-5">
+    <h3 class="card-title align-items-start flex-column">
+      <span class="card-label fw-bolder fs-3 mb-1">{{title}}</span>
+    </h3>
+  </div>
+  <!-- end::Header -->
+  <!-- begin::Body -->
+  <div class="card-body py-3 text-center">
+    <p>{{message}}</p>
+    <div>
+      <a class="btn btn-sm btn-success m-2" (click)="confirm()" [translate]="'COMMON.ACCEPT'">
+      </a>
+      <a class="btn btn-sm btn-danger" (click)="cancel()" [translate]="'COMMON.CANCEL'"></a>
+    </div>
+  </div>
+  <!-- end::Body -->
+</div>
+<!-- end::Card -->
